@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "Smart Pantry",
+    "slug": "smart-pantry",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#0f172a"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.smartpantry"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0f172a"
+      },
+      "package": "com.yourcompany.smartpantry",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "color": "#10b981"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Smart Pantry to access your camera to scan receipts."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Smart Pantry to access your photos to upload receipts."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4694e3bb-cd9c-4c4e-be66-13d477a72012"
+      }
+    }
+  }
+}
