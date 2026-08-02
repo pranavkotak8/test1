@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { CATEGORIES, STORAGE_LOCATIONS } from '../constants/categories';
 import { getCategoryFromName, getDefaultShelfLife } from '../constants/shelfLifeData';
@@ -22,7 +21,6 @@ export default function AddItemScreen({ navigation, route }) {
   const [purchaseDate, setPurchaseDate] = useState(editItem?.purchaseDate || getTodayString());
   const [expiryDate, setExpiryDate] = useState(editItem?.expiryDate || '');
   const [shelfLifeDays, setShelfLifeDays] = useState(editItem?.shelfLifeDays?.toString() || '7');
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [datePickerMode, setDatePickerMode] = useState('purchase');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -42,13 +40,11 @@ export default function AddItemScreen({ navigation, route }) {
     }
   }, [shelfLifeDays, purchaseDate, isEditing]);
 
-  const handleDateChange = (event, selectedDate) => {
-    setShowDatePicker(false);
-    if (selectedDate) {
-      const dateString = selectedDate.toISOString().split('T')[0];
-      if (datePickerMode === 'purchase') setPurchaseDate(dateString);
-      else setExpiryDate(dateString);
-    }
+  const handleDateInput = (mode, text) => {
+    // Simple YYYY-MM-DD validation
+    const cleaned = text.replace(/[^0-9\-]/g, '').slice(0, 10);
+    if (mode === 'purchase') setPurchaseDate(cleaned);
+    else setExpiryDate(cleaned);
   };
 
   const validateForm = () => {
@@ -141,14 +137,14 @@ export default function AddItemScreen({ navigation, route }) {
         <View style={styles.section}>
           <Text style={styles.label}>Dates</Text>
           <View style={styles.dateRow}>
-            <TouchableOpacity style={styles.dateButton} onPress={() => { setDatePickerMode('purchase'); setShowDatePicker(true); }}>
+            <TouchableOpacity style={styles.dateButton} onPress={() => { setDatePickerMode('purchase'); }}>
               <Ionicons name="calendar-outline" size={18} color="#64748b" />
               <View style={styles.dateTextContainer}>
                 <Text style={styles.dateLabel}>Purchased</Text>
                 <Text style={styles.dateValue}>{purchaseDate}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.dateButton} onPress={() => { setDatePickerMode('expiry'); setShowDatePicker(true); }}>
+            <TouchableOpacity style={styles.dateButton} onPress={() => { setDatePickerMode('expiry'); }}>
               <Ionicons name="alarm-outline" size={18} color="#64748b" />
               <View style={styles.dateTextContainer}>
                 <Text style={styles.dateLabel}>Expires</Text>
@@ -163,15 +159,7 @@ export default function AddItemScreen({ navigation, route }) {
           <TextInput style={styles.input} value={shelfLifeDays} onChangeText={setShelfLifeDays} keyboardType="number-pad" placeholder="7" placeholderTextColor="#94a3b8" />
         </View>
 
-        {showDatePicker && (
-          <DateTimePicker
-            value={new Date(datePickerMode === 'purchase' ? purchaseDate : (expiryDate || getTodayString()))}
-            mode="date"
-            display="default"
-            onChange={handleDateChange}
-            minimumDate={datePickerMode === 'expiry' ? new Date(purchaseDate) : undefined}
-          />
-        )}
+
 
         <View style={{ height: 40 }} />
       </ScrollView>
