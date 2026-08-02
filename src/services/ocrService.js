@@ -71,6 +71,8 @@ function normalizeDate(dateStr) {
       const year = parts[2].length === 2 ? `20${parts[2]}` : parts[2];
       return `${year}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`;
     }
-  } catch (e) {}
+  } catch (e) {
+    // Date parsing failed, fallback used
+  }
   return new Date().toISOString().split('T')[0];
 }

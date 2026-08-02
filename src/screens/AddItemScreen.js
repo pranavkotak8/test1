@@ -9,8 +9,7 @@ import { getCategoryFromName, getDefaultShelfLife } from '../constants/shelfLife
 import { addItem } from '../services/database';
 import { scheduleExpiryNotification } from '../services/notificationService';
 import { getTodayString, addDaysToDate } from '../utils/dateUtils';
-import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
+import * as Crypto from 'expo-crypto';
 
 export default function AddItemScreen({ navigation, route }) {
   const editItem = route.params?.item;
@@ -35,13 +34,13 @@ export default function AddItemScreen({ navigation, route }) {
       setShelfLifeDays(defaultShelfLife.toString());
       setExpiryDate(addDaysToDate(purchaseDate, defaultShelfLife));
     }
-  }, [itemName, storageLocation, purchaseDate]);
+  }, [itemName, storageLocation, purchaseDate, isEditing]);
 
   useEffect(() => {
     if (!isEditing && purchaseDate && shelfLifeDays) {
       setExpiryDate(addDaysToDate(purchaseDate, parseInt(shelfLifeDays) || 7));
     }
-  }, [shelfLifeDays, purchaseDate]);
+  }, [shelfLifeDays, purchaseDate, isEditing]);
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
@@ -63,7 +62,7 @@ export default function AddItemScreen({ navigation, route }) {
     setIsLoading(true);
     try {
       const newItem = {
-        id: editItem?.id || uuidv4(),
+        id: editItem?.id || Crypto.randomUUID(),
         itemName: itemName.trim(),
         originalReceiptName: editItem?.originalReceiptName || itemName.trim(),
         category, storageLocation, purchaseDate, expiryDate,
